@@ -9,10 +9,25 @@
 <p>
     <a href="/create-employee">Create new employee</a>
 </p>
+<form action="/searchByDepartment" onchange="this.submit()">
+    <a>Search By Department:</a>
+    <select name="srch">
+        <option th:each="d:${departments}" th:text="${d.getDepartmentName()}" th:value="${d.getId()}" th:selected="(${d.id} == ${srch})"></option>
+    </select>
+</form>
+<p>
+    <a href="/sortBySalaryAsc"><button type="submit">ASC</button></a>
+</p>
+<p>
+    <a href="/descBySalaryDesc"><button type="submit">DESC</button></a>
+</p>
+
 <table border="1">
     <tr>
         <td>Employee name</td>
         <td>BirthDate</td>
+        <td>Salary</td>
+        <td>Address</td>
         <td>Department name</td>
         <td>Edit</td>
         <td>Delete</td>
@@ -21,6 +36,8 @@
         <tr>
             <td th:text="${employee.employeeName}"></td>
             <td th:text="${employee.birthDate}"></td>
+            <td th:text="${employee.salary}"></td>
+            <td th:text="${employee.address}"></td>
             <td th:text="${employee.department.departmentName}"></td>
             <td>
                 <a th:href="@{/edit-employee/__${employee.id}__}">Edit</a>
@@ -31,5 +48,15 @@
         </tr>
     </th:block>
 </table>
+<div th:if="srch">
+    <a th:href="@{''(page=${employees.number - 1}, srch=${srch})}" th:if="${employees.hasPrevious()}">Back</a>
+    <span th:text="${employees.number + 1}"></span>/<span th:text="${employees.totalPages}"></span>
+    <a th:href="@{''(page=${employees.number + 1}, srch=${srch})}" th:if="${employees.hasNext()}">Next</a>
+</div>
+<div th:if="!srch">
+    <a th:href="@{''(page=${employees.number - 1})}" th:if="${employees.hasPrevious()}">Back</a>
+    <span th:text="${employees.number + 1}"></span>/<span th:text="${employees.totalPages}"></span>
+    <a th:href="@{''(page=${employees.number + 1})}" th:if="${employees.hasNext()}">Next</a>
+</div>
 </body>
 </html>

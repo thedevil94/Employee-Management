@@ -7,12 +7,14 @@ import com.huucong.model.Employee;
 import com.huucong.service.DepartmentService;
 import com.huucong.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Optional;
 
 @Controller
 public class EmployeeController {
@@ -27,8 +29,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee")
-    public ModelAndView listDepartment(){
-        Iterable<Employee> employees = employeeService.findAll();
+    public ModelAndView listDepartment(@PageableDefault(size = 8) Pageable pageable){
+        Page<Employee> employees = employeeService.findAll(pageable);
         ModelAndView modelAndView = new ModelAndView("/employee/list");
         modelAndView.addObject("employees", employees);
         return modelAndView;
@@ -68,5 +70,31 @@ public class EmployeeController {
     public String deleteEmployee(@PathVariable int id){
         employeeService.remove(id);
         return "redirect:/employee";
+    }
+
+    @GetMapping("/searchByDepartment")
+    public ModelAndView getEmployeeByDepartment(@RequestParam("srch") String search,@PageableDefault(size = 2) Pageable pageable){
+        Department department = departmentService.findById(Integer.parseInt(search));
+        Page<Employee> employees = employeeService.findAllByDepartment(department,pageable);
+        ModelAndView modelAndView = new ModelAndView("/employee/list");
+        modelAndView.addObject("employees",employees);
+        modelAndView.addObject("srch",search);
+        return modelAndView;
+    }
+
+    @GetMapping("/sortBySalaryAsc")
+    public ModelAndView getEmployeeSortBySalaryAsc(@PageableDefault(size = 8) Pageable pageable){
+        Page<Employee> employees = employeeService.findAllByOrderBySalaryAsc(pageable);
+        ModelAndView modelAndView = new ModelAndView("/employee/list");
+        modelAndView.addObject("employees",employees);
+        return modelAndView;
+    }
+
+    @GetMapping("/descBySalaryDesc")
+    public ModelAndView getEmployeeSortBySalaryDesc(@PageableDefault(size = 8) Pageable pageable){
+        Page<Employee> employees = employeeService.findAllByOrderBySalaryDesc(pageable);
+        ModelAndView modelAndView = new ModelAndView("/employee/list");
+        modelAndView.addObject("employees",employees);
+        return modelAndView;
     }
 }

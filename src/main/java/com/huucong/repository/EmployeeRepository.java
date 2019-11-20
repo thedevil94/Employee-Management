@@ -9,6 +9,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface EmployeeRepository extends PagingAndSortingRepository<Employee, Integer> {
     Iterable<Employee> findAllByDepartment(Department department);
 
-    Page<Employee> findAllByDepartmentNameContaining(String departmentName, Pageable pageable);
+    Page<Employee> findAllByDepartment(Department department, Pageable pageable);
 
+    Page<Employee> findAllByOrderBySalaryAsc(Pageable pageable);
+    Page<Employee> findAllByOrderBySalaryDesc(Pageable pageable);
 }

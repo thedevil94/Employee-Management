@@ -5,13 +5,16 @@ import com.huucong.model.Employee;
 import com.huucong.repository.EmployeeRepository;
 import com.huucong.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public class EmployeeServieImpl implements EmployeeService {
     @Autowired
     EmployeeRepository employeeRepository;
+
     @Override
-    public Iterable<Employee> findAll() {
-        return employeeRepository.findAll();
+    public Page<Employee> findAll(Pageable pageable) {
+        return employeeRepository.findAll(pageable);
     }
 
     @Override
@@ -32,5 +35,20 @@ public class EmployeeServieImpl implements EmployeeService {
     @Override
     public Iterable<Employee> findAllByDepartment(Department department) {
         return employeeRepository.findAllByDepartment(department);
+    }
+
+    @Override
+    public Page<Employee> findAllByDepartment(Department department, Pageable pageable) {
+        return employeeRepository.findAllByDepartment(department,pageable);
+    }
+
+    @Override
+    public Page<Employee> findAllByOrderBySalaryAsc(Pageable pageable) {
+        return employeeRepository.findAllByOrderBySalaryAsc(pageable);
+    }
+
+    @Override
+    public Page<Employee> findAllByOrderBySalaryDesc(Pageable pageable) {
+        return employeeRepository.findAllByOrderBySalaryDesc(pageable);
     }
 }
